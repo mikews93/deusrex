@@ -13,7 +13,8 @@ export class JurisdictionsService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async create(data: z.infer<typeof jurisdictionInsertSchema>) {
-    const [jurisdiction] = await this.databaseService.db
+    const [jurisdiction] = await this.databaseService
+      .getDatabase()
       .insert(jurisdictions)
       .values(data)
       .returning();
@@ -22,7 +23,8 @@ export class JurisdictionsService {
   }
 
   async findAll(organizationId: string) {
-    return await this.databaseService.db
+    return await this.databaseService
+      .getDatabase()
       .select()
       .from(jurisdictions)
       .where(
@@ -35,7 +37,8 @@ export class JurisdictionsService {
   }
 
   async findOne(id: string, organizationId: string) {
-    const [jurisdiction] = await this.databaseService.db
+    const [jurisdiction] = await this.databaseService
+      .getDatabase()
       .select()
       .from(jurisdictions)
       .where(
@@ -54,7 +57,8 @@ export class JurisdictionsService {
     data: Partial<z.infer<typeof jurisdictionInsertSchema>>,
     organizationId: string,
   ) {
-    const [jurisdiction] = await this.databaseService.db
+    const [jurisdiction] = await this.databaseService
+      .getDatabase()
       .update(jurisdictions)
       .set({ ...data, updatedAt: new Date() })
       .where(
@@ -69,7 +73,8 @@ export class JurisdictionsService {
   }
 
   async remove(id: string, organizationId: string) {
-    const [jurisdiction] = await this.databaseService.db
+    const [jurisdiction] = await this.databaseService
+      .getDatabase()
       .update(jurisdictions)
       .set({
         isActive: false,
@@ -87,7 +92,8 @@ export class JurisdictionsService {
   }
 
   async findByCountry(country: string, organizationId: string) {
-    return await this.databaseService.db
+    return await this.databaseService
+      .getDatabase()
       .select()
       .from(jurisdictions)
       .where(

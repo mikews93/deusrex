@@ -13,12 +13,12 @@ import {
   taxCategoryInsertSchema,
   taxCategorySelectSchema,
 } from '../../database/schemas/zod-schemas';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { ClerkGuard } from '../../common/guards/clerk.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { z } from 'zod';
 
 @Controller('tax-categories')
-@UseGuards(JwtAuthGuard)
+@UseGuards(ClerkGuard)
 export class TaxCategoriesController {
   constructor(private readonly taxCategoriesService: TaxCategoriesService) {}
 

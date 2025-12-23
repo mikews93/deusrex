@@ -39,7 +39,7 @@ export async function seedTaxCategories() {
         name: 'IVA Estándar',
         description: 'Impuesto al Valor Agregado - Tarifa Estándar',
         code: 'IVA_ESTANDAR',
-        defaultRate: 0.19, // 19% - Standard VAT rate in Colombia
+        defaultRate: '0.19', // 19% - Standard VAT rate in Colombia
         isCompound: false,
         isInclusive: false,
         requiresExemption: false,
@@ -58,7 +58,7 @@ export async function seedTaxCategories() {
         name: 'IVA Reducido',
         description: 'Impuesto al Valor Agregado - Tarifa Reducida',
         code: 'IVA_REDUCIDO',
-        defaultRate: 0.05, // 5% - Reduced VAT rate
+        defaultRate: '0.05', // 5% - Reduced VAT rate
         isCompound: false,
         isInclusive: false,
         requiresExemption: false,
@@ -78,7 +78,7 @@ export async function seedTaxCategories() {
         name: 'IVA Exento',
         description: 'Impuesto al Valor Agregado - Exento',
         code: 'IVA_EXENTO',
-        defaultRate: 0.0, // 0% - Exempt from VAT
+        defaultRate: '0.0', // 0% - Exempt from VAT
         isCompound: false,
         isInclusive: false,
         requiresExemption: true,
@@ -98,7 +98,7 @@ export async function seedTaxCategories() {
         name: 'IVA Excluido',
         description: 'Impuesto al Valor Agregado - Excluido',
         code: 'IVA_EXCLUIDO',
-        defaultRate: 0.0, // 0% - Excluded from VAT
+        defaultRate: '0.0', // 0% - Excluded from VAT
         isCompound: false,
         isInclusive: false,
         requiresExemption: true,
@@ -120,7 +120,7 @@ export async function seedTaxCategories() {
         name: 'ICA General',
         description: 'Impuesto de Industria y Comercio - Tarifa General',
         code: 'ICA_GENERAL',
-        defaultRate: 0.01, // 1.0% - General ICA rate
+        defaultRate: '0.01', // 1.0% - General ICA rate
         isCompound: false,
         isInclusive: false,
         requiresExemption: false,
@@ -140,7 +140,7 @@ export async function seedTaxCategories() {
         name: 'ICA Reducido',
         description: 'Impuesto de Industria y Comercio - Tarifa Reducida',
         code: 'ICA_REDUCIDO',
-        defaultRate: 0.005, // 0.5% - Reduced ICA rate
+        defaultRate: '0.005', // 0.5% - Reduced ICA rate
         isCompound: false,
         isInclusive: false,
         requiresExemption: false,
@@ -159,7 +159,7 @@ export async function seedTaxCategories() {
         name: 'ICA Exento',
         description: 'Impuesto de Industria y Comercio - Exento',
         code: 'ICA_EXENTO',
-        defaultRate: 0.0, // 0% - Exempt from ICA
+        defaultRate: '0.0', // 0% - Exempt from ICA
         isCompound: false,
         isInclusive: false,
         requiresExemption: true,
@@ -181,7 +181,7 @@ export async function seedTaxCategories() {
         name: 'Retención IVA',
         description: 'Retención en la Fuente - IVA',
         code: 'RET_IVA',
-        defaultRate: 0.19, // 19% - VAT withholding
+        defaultRate: '0.19', // 19% - VAT withholding
         isCompound: false,
         isInclusive: false,
         requiresExemption: false,
@@ -200,7 +200,7 @@ export async function seedTaxCategories() {
         name: 'Retención ICA',
         description: 'Retención en la Fuente - ICA',
         code: 'RET_ICA',
-        defaultRate: 0.01, // 1.0% - ICA withholding
+        defaultRate: '0.01', // 1.0% - ICA withholding
         isCompound: false,
         isInclusive: false,
         requiresExemption: false,
@@ -219,7 +219,7 @@ export async function seedTaxCategories() {
         name: 'Retención Renta',
         description: 'Retención en la Fuente - Renta',
         code: 'RET_RENTA',
-        defaultRate: 0.035, // 3.5% - Income tax withholding
+        defaultRate: '0.035', // 3.5% - Income tax withholding
         isCompound: false,
         isInclusive: false,
         requiresExemption: false,
@@ -240,7 +240,7 @@ export async function seedTaxCategories() {
         name: 'CREE',
         description: 'Impuesto sobre la Renta para la Equidad',
         code: 'CREE',
-        defaultRate: 0.09, // 9% - CREE rate
+        defaultRate: '0.09', // 9% - CREE rate
         isCompound: false,
         isInclusive: false,
         requiresExemption: false,

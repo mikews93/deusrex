@@ -57,12 +57,30 @@ export async function seedTaxRates() {
       return;
     }
 
-    const taxRatesData = [];
+    const taxRatesData: Array<{
+      jurisdictionId: string;
+      taxCategoryId: string;
+      rate: string;
+      effectiveFrom: string;
+      effectiveTo: null;
+      minimumAmount: string | null;
+      maximumAmount: string | null;
+      metadata: {
+        jurisdictionName: string;
+        taxCategoryName: string;
+        taxCategoryCode: string;
+        dianCompliant: boolean;
+        lastUpdated: string;
+        legalBasis: string;
+      };
+      organizationId: string;
+      createdBy: string;
+    }> = [];
 
     // Create tax rates for each jurisdiction and tax category combination
     for (const jurisdiction of allJurisdictions) {
       for (const taxCategory of allTaxCategories) {
-        let rate = taxCategory.defaultRate;
+        let rate: string = taxCategory.defaultRate || '0';
         let effectiveFrom = new Date('2024-01-01');
         let effectiveTo = null; // Current rate, no end date
 
@@ -70,43 +88,43 @@ export async function seedTaxRates() {
         if (taxCategory.code === 'ICA_GENERAL') {
           // ICA rates vary by jurisdiction
           if (jurisdiction.id === 'CO-BOG') {
-            rate = 0.009; // 0.9% for Bogotá
+            rate = '0.009'; // 0.9% for Bogotá
           } else if (jurisdiction.id === 'CO-ANT') {
-            rate = 0.01; // 1.0% for Antioquia
+            rate = '0.01'; // 1.0% for Antioquia
           } else if (jurisdiction.id === 'CO-VAL') {
-            rate = 0.01; // 1.0% for Valle del Cauca
+            rate = '0.01'; // 1.0% for Valle del Cauca
           } else if (jurisdiction.id === 'CO-ATL') {
-            rate = 0.01; // 1.0% for Atlántico
+            rate = '0.01'; // 1.0% for Atlántico
           } else {
-            rate = 0.01; // 1.0% default for other jurisdictions
+            rate = '0.01'; // 1.0% default for other jurisdictions
           }
         } else if (taxCategory.code === 'ICA_REDUCIDO') {
           // Reduced ICA rate
-          rate = 0.005; // 0.5%
+          rate = '0.005'; // 0.5%
         } else if (taxCategory.code === 'RET_ICA') {
           // ICA withholding rate
-          rate = 0.01; // 1.0%
+          rate = '0.01'; // 1.0%
         } else if (taxCategory.code === 'RET_IVA') {
           // VAT withholding rate
-          rate = 0.19; // 19%
+          rate = '0.19'; // 19%
         } else if (taxCategory.code === 'RET_RENTA') {
           // Income tax withholding rate
-          rate = 0.035; // 3.5%
+          rate = '0.035'; // 3.5%
         } else if (taxCategory.code === 'CREE') {
           // CREE rate
-          rate = 0.09; // 9%
+          rate = '0.09'; // 9%
         }
 
         // Set minimum and maximum amounts for certain taxes
-        let minimumAmount = null;
-        let maximumAmount = null;
+        let minimumAmount: string | null = null;
+        let maximumAmount: string | null = null;
 
         if (taxCategory.code === 'CREE') {
           // CREE applies to companies with income above 800 UVT
-          minimumAmount = 800 * 42500; // 800 UVT * 42,500 COP (approximate UVT value)
+          minimumAmount = (800 * 42500).toString(); // 800 UVT * 42,500 COP (approximate UVT value)
         } else if (taxCategory.code === 'RET_RENTA') {
           // Income tax withholding applies to payments above certain thresholds
-          minimumAmount = 1000000; // 1,000,000 COP
+          minimumAmount = '1000000'; // 1,000,000 COP
         }
 
         const taxRate = {
@@ -115,8 +133,8 @@ export async function seedTaxRates() {
           rate: rate,
           effectiveFrom: effectiveFrom.toISOString().split('T')[0],
           effectiveTo: effectiveTo,
-          minimumAmount: minimumAmount ? minimumAmount.toString() : null,
-          maximumAmount: maximumAmount ? maximumAmount.toString() : null,
+          minimumAmount: minimumAmount,
+          maximumAmount: maximumAmount,
           metadata: {
             jurisdictionName: jurisdiction.name,
             taxCategoryName: taxCategory.name,
@@ -124,7 +142,7 @@ export async function seedTaxRates() {
             dianCompliant: true,
             lastUpdated: new Date().toISOString(),
             legalBasis:
-              taxCategory.metadata?.legalBasis || 'Estatuto Tributario',
+              (taxCategory.metadata as any)?.legalBasis || 'Estatuto Tributario',
           },
           organizationId: organization.id,
           createdBy: user.id,
@@ -139,7 +157,7 @@ export async function seedTaxRates() {
       try {
         await db.insert(taxRates).values(taxRate).onConflictDoNothing();
         console.log(
-          `✓ Created tax rate: ${taxRate.metadata.jurisdictionName} - ${taxRate.metadata.taxCategoryName} (${(taxRate.rate * 100).toFixed(1)}%)`,
+          `✓ Created tax rate: ${taxRate.metadata.jurisdictionName} - ${taxRate.metadata.taxCategoryName} (${(parseFloat(taxRate.rate) * 100).toFixed(1)}%)`,
         );
       } catch (error) {
         console.error(`✗ Failed to create tax rate:`, error);

@@ -16,12 +16,35 @@ export class SalesService extends BaseService<SaleWithRelations> {
 
   // Enhanced create method for multi-country compliance
   async create(
+    saleData: z.infer<typeof saleCreateSchema> | Partial<SaleWithRelations>,
+    organizationId: string,
+    userId?: string,
+  ) {
+    // Type guard to check if it's the enhanced schema
+    if ('saleItems' in saleData && Array.isArray(saleData.saleItems)) {
+      return this.createWithItems(
+        saleData as z.infer<typeof saleCreateSchema>,
+        organizationId,
+        userId,
+      );
+    }
+
+    // Fall back to base class create for partial data
+    return super.create(
+      saleData as Partial<SaleWithRelations>,
+      organizationId,
+      userId,
+    );
+  }
+
+  private async createWithItems(
     saleData: z.infer<typeof saleCreateSchema>,
     organizationId: string,
     userId?: string,
   ) {
+    const { saleItems: itemsToCreate, ...saleDataWithoutItems } = saleData;
     const processedSaleData = {
-      ...saleData,
+      ...saleDataWithoutItems,
       organizationId: organizationId,
       saleDate: new Date(saleData.saleDate).toISOString().split('T')[0],
       issueDate: new Date(saleData.issueDate).toISOString().split('T')[0],
@@ -29,25 +52,25 @@ export class SalesService extends BaseService<SaleWithRelations> {
         ? new Date(saleData.dueDate).toISOString().split('T')[0]
         : null,
       totalAmount: saleData.totalAmount.toString(),
-      subtotal: saleData.subtotal.toString(),
-      tax: saleData.tax.toString(),
-      total: saleData.total.toString(),
+      subtotal: (saleData.subtotal ?? '0').toString(),
+      tax: (saleData.tax ?? '0').toString(),
+      total: (saleData.total ?? saleData.totalAmount).toString(),
     };
 
     // Create the sale first
     const sale = await super.create(processedSaleData, organizationId, userId);
 
     // Create sale items if provided
-    if (saleData.saleItems && saleData.saleItems.length > 0) {
-      const saleItemsData = saleData.saleItems.map((item) => ({
+    if (itemsToCreate && itemsToCreate.length > 0) {
+      const saleItemsData = itemsToCreate.map((item) => ({
         ...item,
         saleId: sale.id,
-        quantity: item.quantity.toString(),
+        quantity: (item.quantity ?? '1').toString(),
         unitPrice: item.unitPrice.toString(),
         totalPrice: item.totalPrice.toString(),
-        subtotal: item.subtotal.toString(),
-        tax: item.tax.toString(),
-        total: item.total.toString(),
+        subtotal: (item.subtotal ?? '0').toString(),
+        tax: (item.tax ?? '0').toString(),
+        total: (item.total ?? item.totalPrice).toString(),
       }));
 
       await this.db.insert(saleItems).values(saleItemsData);
@@ -142,7 +165,15 @@ export class SalesService extends BaseService<SaleWithRelations> {
       .from(sales)
       .where(
         and(
-          eq(sales.status, status),
+          eq(
+            sales.status,
+            status as
+              | 'completed'
+              | 'cancelled'
+              | 'draft'
+              | 'issued'
+              | 'accepted',
+          ),
           eq(sales.organizationId, organizationId),
           eq(sales.isActive, true),
         ),
@@ -170,7 +201,19 @@ export class SalesService extends BaseService<SaleWithRelations> {
     organizationId: string,
     userId?: string,
   ) {
-    return await this.update(id, { status }, organizationId, userId);
+    return await this.update(
+      id,
+      {
+        status: status as
+          | 'completed'
+          | 'cancelled'
+          | 'draft'
+          | 'issued'
+          | 'accepted',
+      },
+      organizationId,
+      userId,
+    );
   }
 
   async generateSaleNumber(organizationId: string, jurisdictionId: string) {

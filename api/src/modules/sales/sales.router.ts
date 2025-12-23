@@ -94,7 +94,7 @@ export const salesRouter = router({
 
       const totalSales = allSales.length;
       const pendingSales = allSales.filter(
-        (sale) => sale.status === 'pending',
+        (sale) => sale.status === 'draft',
       ).length;
       const totalTransactions = allSales.filter(
         (sale) => sale.status === 'completed',
@@ -241,7 +241,7 @@ export const salesRouter = router({
         if (!item.itemId) {
           throw new Error('Item must have an item ID');
         }
-        if (item.quantity <= 0) {
+        if (!item.quantity || Number(item.quantity) <= 0) {
           throw new Error('Item quantity must be greater than 0');
         }
         if (Number(item.unitPrice) <= 0) {
@@ -252,8 +252,17 @@ export const salesRouter = router({
         }
       }
 
+      // Convert dates to Date objects as expected by saleCreateSchema
+      const saleData = {
+        ...sale,
+        organizationId: ctx.user.organizationId,
+        saleItems: items,
+        issueDate: sale.issueDate ? new Date(sale.issueDate) : new Date(),
+        dueDate: sale.dueDate ? new Date(sale.dueDate) : undefined,
+      } as z.infer<typeof saleCreateSchema>;
+
       return services.salesService.create(
-        sale,
+        saleData,
         ctx.user.organizationId,
         ctx.user.id.toString(),
       );

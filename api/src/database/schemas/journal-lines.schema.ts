@@ -17,8 +17,8 @@ export const journalLines = pgTable('journal_lines', {
   accountCode: varchar('account_code', { length: 50 }).notNull(),
 
   // Debit/Credit amounts
-  debit: decimal('debit', { precision: 18, scale: 2 }).default(0),
-  credit: decimal('credit', { precision: 18, scale: 2 }).default(0),
+  debit: decimal('debit', { precision: 18, scale: 2 }).default('0'),
+  credit: decimal('credit', { precision: 18, scale: 2 }).default('0'),
 
   // Reference information
   referenceType: varchar('reference_type', { length: 20 }),

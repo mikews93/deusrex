@@ -13,7 +13,8 @@ export class FiscalDocumentsService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async create(data: z.infer<typeof fiscalDocumentInsertSchema>) {
-    const [fiscalDocument] = await this.databaseService.db
+    const [fiscalDocument] = await this.databaseService
+      .getDatabase()
       .insert(fiscalDocuments)
       .values(data)
       .returning();
@@ -22,7 +23,8 @@ export class FiscalDocumentsService {
   }
 
   async findAll(organizationId: string) {
-    return await this.databaseService.db
+    return await this.databaseService
+      .getDatabase()
       .select()
       .from(fiscalDocuments)
       .where(eq(fiscalDocuments.organizationId, organizationId))
@@ -30,7 +32,8 @@ export class FiscalDocumentsService {
   }
 
   async findOne(id: string, organizationId: string) {
-    const [fiscalDocument] = await this.databaseService.db
+    const [fiscalDocument] = await this.databaseService
+      .getDatabase()
       .select()
       .from(fiscalDocuments)
       .where(
@@ -48,7 +51,8 @@ export class FiscalDocumentsService {
     data: Partial<z.infer<typeof fiscalDocumentInsertSchema>>,
     organizationId: string,
   ) {
-    const [fiscalDocument] = await this.databaseService.db
+    const [fiscalDocument] = await this.databaseService
+      .getDatabase()
       .update(fiscalDocuments)
       .set({ ...data, updatedAt: new Date() })
       .where(
@@ -67,7 +71,8 @@ export class FiscalDocumentsService {
     relatedId: string,
     organizationId: string,
   ) {
-    return await this.databaseService.db
+    return await this.databaseService
+      .getDatabase()
       .select()
       .from(fiscalDocuments)
       .where(
@@ -81,7 +86,8 @@ export class FiscalDocumentsService {
   }
 
   async findByJurisdiction(jurisdictionId: string, organizationId: string) {
-    return await this.databaseService.db
+    return await this.databaseService
+      .getDatabase()
       .select()
       .from(fiscalDocuments)
       .where(
@@ -94,10 +100,17 @@ export class FiscalDocumentsService {
   }
 
   async updateStatus(id: string, status: string, organizationId: string) {
-    const [fiscalDocument] = await this.databaseService.db
+    const [fiscalDocument] = await this.databaseService
+      .getDatabase()
       .update(fiscalDocuments)
       .set({
-        status,
+        status: status as
+          | 'pending'
+          | 'generated'
+          | 'sent'
+          | 'accepted'
+          | 'rejected'
+          | 'failed',
         updatedAt: new Date(),
       })
       .where(

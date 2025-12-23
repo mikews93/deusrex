@@ -14,12 +14,12 @@ import {
   fiscalDocumentInsertSchema,
   fiscalDocumentSelectSchema,
 } from '../../database/schemas/zod-schemas';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { ClerkGuard } from '../../common/guards/clerk.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { z } from 'zod';
 
 @Controller('fiscal-documents')
-@UseGuards(JwtAuthGuard)
+@UseGuards(ClerkGuard)
 export class FiscalDocumentsController {
   constructor(
     private readonly fiscalDocumentsService: FiscalDocumentsService,

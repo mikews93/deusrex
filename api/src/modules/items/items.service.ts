@@ -52,10 +52,10 @@ export class ItemsService extends BaseService<Item> {
 
       // Stock range filters
       if (filters.stockMin !== undefined) {
-        conditions.push(gte(items.stock, filters.stockMin));
+        conditions.push(gte(items.stock, filters.stockMin.toString()));
       }
       if (filters.stockMax !== undefined) {
-        conditions.push(lte(items.stock, filters.stockMax));
+        conditions.push(lte(items.stock, filters.stockMax.toString()));
       }
 
       // Price range filters
@@ -86,7 +86,7 @@ export class ItemsService extends BaseService<Item> {
   ) {
     // Validate type-specific fields
     if (itemData.type === 'product' && itemData.stock === undefined) {
-      itemData.stock = 0;
+      itemData.stock = '0';
     }
     if (itemData.type === 'service' && itemData.duration === undefined) {
       throw new Error('Duration is required for services');
@@ -168,7 +168,12 @@ export class ItemsService extends BaseService<Item> {
       throw new Error('Stock can only be updated for products');
     }
 
-    return this.update(id, { stock: newStock }, organizationId, userId);
+    return this.update(
+      id,
+      { stock: newStock.toString() },
+      organizationId,
+      userId,
+    );
   }
 
   // Get low stock products
@@ -176,7 +181,7 @@ export class ItemsService extends BaseService<Item> {
     const conditions = [
       eq(items.organizationId, organizationId),
       eq(items.type, 'product'),
-      lte(items.stock, threshold),
+      lte(items.stock, threshold.toString()),
       isNull(items.deletedAt),
     ];
 

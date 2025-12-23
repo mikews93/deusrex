@@ -13,12 +13,12 @@ import {
   jurisdictionInsertSchema,
   jurisdictionSelectSchema,
 } from '../../database/schemas/zod-schemas';
-import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { ClerkGuard } from '../../common/guards/clerk.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { z } from 'zod';
 
 @Controller('jurisdictions')
-@UseGuards(JwtAuthGuard)
+@UseGuards(ClerkGuard)
 export class JurisdictionsController {
   constructor(private readonly jurisdictionsService: JurisdictionsService) {}
 

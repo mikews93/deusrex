@@ -13,7 +13,8 @@ export class TaxCategoriesService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async create(data: z.infer<typeof taxCategoryInsertSchema>) {
-    const [taxCategory] = await this.databaseService.db
+    const [taxCategory] = await this.databaseService
+      .getDatabase()
       .insert(taxCategories)
       .values(data)
       .returning();
@@ -22,7 +23,8 @@ export class TaxCategoriesService {
   }
 
   async findAll(organizationId: string) {
-    return await this.databaseService.db
+    return await this.databaseService
+      .getDatabase()
       .select()
       .from(taxCategories)
       .where(
@@ -35,7 +37,8 @@ export class TaxCategoriesService {
   }
 
   async findOne(id: string, organizationId: string) {
-    const [taxCategory] = await this.databaseService.db
+    const [taxCategory] = await this.databaseService
+      .getDatabase()
       .select()
       .from(taxCategories)
       .where(
@@ -54,7 +57,8 @@ export class TaxCategoriesService {
     data: Partial<z.infer<typeof taxCategoryInsertSchema>>,
     organizationId: string,
   ) {
-    const [taxCategory] = await this.databaseService.db
+    const [taxCategory] = await this.databaseService
+      .getDatabase()
       .update(taxCategories)
       .set({ ...data, updatedAt: new Date() })
       .where(
@@ -69,7 +73,8 @@ export class TaxCategoriesService {
   }
 
   async remove(id: string, organizationId: string) {
-    const [taxCategory] = await this.databaseService.db
+    const [taxCategory] = await this.databaseService
+      .getDatabase()
       .update(taxCategories)
       .set({
         isActive: false,
@@ -87,7 +92,8 @@ export class TaxCategoriesService {
   }
 
   async findByCode(code: string, organizationId: string) {
-    const [taxCategory] = await this.databaseService.db
+    const [taxCategory] = await this.databaseService
+      .getDatabase()
       .select()
       .from(taxCategories)
       .where(
