@@ -29,7 +29,6 @@ export class TrpcAuthService {
     const token = this.extractTokenFromHeader(req);
 
     if (!token) {
-      this.logger.debug('No token provided');
       return null;
     }
 
@@ -54,20 +53,27 @@ export class TrpcAuthService {
         'http://127.0.0.1:8080',
       ].filter((v): v is string => Boolean(v));
 
-      const payload = (await verifyToken(token, {
-        secretKey,
-        authorizedParties: allowedAzp,
-      })) as any;
+      // Try with jwtKey first (for JWT templates like "Eden")
+      let payload: any;
+      try {
+        payload = (await verifyToken(token, {
+          jwtKey,
+          authorizedParties: allowedAzp,
+        })) as any;
+      } catch (jwtKeyError) {
+        // Fallback to secretKey if jwtKey fails
+        payload = (await verifyToken(token, {
+          secretKey,
+          authorizedParties: allowedAzp,
+        })) as any;
+      }
 
       // Extract organization information from the token
       const clerkOrganizationId: string | undefined =
         (payload as any).organizationId || (payload as any).org_id;
 
       if (!clerkOrganizationId) {
-        this.logger.debug('No organization ID in token');
-        this.logger.debug(
-          `Available payload keys: ${Object.keys(payload).join(', ')}`,
-        );
+        this.logger.warn('No organization ID in token');
         return null;
       }
 
@@ -102,7 +108,7 @@ export class TrpcAuthService {
         .where(eq(users.clerkUserId, payload.sub));
 
       if (!userWithOrg) {
-        this.logger.debug(
+        this.logger.warn(
           `User not found or not in organization: ${payload.sub}, org: ${clerkOrganizationId}`,
         );
         return null;

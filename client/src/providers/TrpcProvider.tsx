@@ -20,15 +20,21 @@ export function TrpcProvider({ children }: TrpcProviderProps) {
         httpBatchLink({
           url: `${API_URL}/trpc`,
           async headers() {
-            if (!isSignedIn) {
-              return {};
+            // Always try to get token, even if isSignedIn is false
+            // Clerk might still have a token in cache
+            try {
+              const token = await getToken({ template: "Eden" });
+              if (token) {
+                return {
+                  authorization: `Bearer ${token}`,
+                };
+              }
+            } catch (error) {
+              console.error('Error getting token:', error);
             }
-
-            // Get the JWT token using the "Eden" template
-            const token = await getToken({ template: "Eden" });
-            return {
-              authorization: token ? `Bearer ${token}` : "",
-            };
+            
+            // If no token, return empty headers (will result in 401)
+            return {};
           },
         }),
       ],

@@ -36,7 +36,6 @@ export class TrpcContextFactory {
     // Get database from request
     const db = (req as any).db || null;
 
-    // Debug: Log if database is missing
     if (!db) {
       this.logger.error('Database not found in request context');
       return this.createUnauthenticatedContext(db);
@@ -64,7 +63,6 @@ export class TrpcContextFactory {
     }
 
     // If no user data, return unauthenticated context
-    this.logger.debug('No user data found in request');
     return this.createUnauthenticatedContext(db);
   }
 
