@@ -50,10 +50,16 @@ export function CreateSaleForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     createSale.mutate({
-      ...formData,
-      clientId: formData.clientId,
-      totalAmount: parseFloat(formData.totalAmount).toString() || "0",
-      status: formData.status as "pending" | "completed" | "cancelled",
+      sale: {
+        ...formData,
+        totalAmount: parseFloat(formData.totalAmount).toString() || "0",
+        status: (formData.status === "pending" ? "draft" : formData.status) as
+          | "completed"
+          | "cancelled"
+          | "draft"
+          | "issued"
+          | "accepted",
+      },
       items: [], // TODO: Add proper items handling
     });
   };

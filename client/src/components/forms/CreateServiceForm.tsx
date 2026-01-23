@@ -29,7 +29,7 @@ export function CreateServiceForm() {
   const { data: currentOrganization } =
     trpc.auth.currentOrganization.useQuery();
 
-  const createService = trpc.services.create.useMutation({
+  const createService = trpc.items.create.useMutation({
     onSuccess: () => {
       toast.success("Service created successfully");
       setOpen(false);
@@ -54,8 +54,10 @@ export function CreateServiceForm() {
     }
     createService.mutate({
       ...formData,
+      type: "service",
       organizationId: currentOrganization.id,
       duration: parseInt(formData.duration) || 0,
+      price: formData.price,
     });
   };
 

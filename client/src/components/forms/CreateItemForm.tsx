@@ -78,15 +78,15 @@ export function CreateItemForm() {
   const onSubmit = (data: CreateItemFormData) => {
     const submitData = {
       ...data,
-      price: parseFloat(data.price),
-      cost: data.cost ? parseFloat(data.cost) : undefined,
+      price: data.price,
+      cost: data.cost || undefined,
       stock:
         data.type === "product" && data.stock
-          ? parseInt(data.stock)
+          ? data.stock
           : undefined,
       duration:
         data.type === "service" && data.duration
-          ? parseInt(data.duration)
+          ? parseInt(data.duration) || undefined
           : undefined,
     };
 

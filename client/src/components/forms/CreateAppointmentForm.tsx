@@ -35,8 +35,8 @@ import {
 export const DEFAULT_APPOINTMENT_DURATION = 60;
 
 export const initialNewAppointment: Partial<Appointment> = {
-  patientId: 0,
-  healthProfessionalId: 0,
+  patientId: "",
+  healthProfessionalId: "",
   appointmentDate: new Date().toISOString(),
   duration: DEFAULT_APPOINTMENT_DURATION,
   startTime: new Date().toISOString(),
@@ -277,8 +277,8 @@ export function CreateAppointmentForm({
 
     const appointmentData = {
       organizationId: currentUser.user.organizationId,
-      patientId: formData.patientId || 0,
-      healthProfessionalId: formData.healthProfessionalId || 0,
+      patientId: formData.patientId || "",
+      healthProfessionalId: formData.healthProfessionalId || "",
       duration: formData.duration || 0,
       appointmentDate: appointmentDateTime.toISOString(),
       startTime: appointmentDateTime.toISOString(),

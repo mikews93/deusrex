@@ -114,7 +114,6 @@ export function CreatePatientForm() {
         | null,
       allergies: formData.allergies || null,
       currentMedications: formData.currentMedications || null,
-      medicalHistory: formData.medicalHistory || null,
       insuranceProvider: formData.insuranceProvider || null,
       insuranceNumber: formData.insuranceNumber || null,
     });

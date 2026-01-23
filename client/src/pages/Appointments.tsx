@@ -136,6 +136,8 @@ const Appointments = () => {
     refetch,
   } = trpc.appointments.getAll.useQuery({
     ...filters,
+    patientId: filters.patientId?.toString(),
+    healthProfessionalId: filters.healthProfessionalId?.toString(),
     with: JSON.stringify({ patient: true, healthProfessional: true }),
   });
 

@@ -54,8 +54,12 @@ const NewSale = () => {
   const { data: clients } = trpc.clients.getAll.useQuery();
 
   // Get products and services for dropdowns
-  const { data: products } = trpc.products.getAll.useQuery();
-  const { data: services } = trpc.services.getAll.useQuery();
+  const { data: itemsData } = trpc.items.getAll.useQuery();
+  const items = Array.isArray(itemsData)
+    ? itemsData
+    : itemsData?.data || [];
+  const products = items.filter((item: any) => item.type === "product");
+  const services = items.filter((item: any) => item.type === "service");
 
   // Create sale mutation
   const createSale = trpc.sales.create.useMutation({
@@ -114,16 +118,23 @@ const NewSale = () => {
     const itemsData = saleItems.map((item) => ({
       productId: item.productId,
       serviceId: item.serviceId,
-      quantity: item.quantity,
+      quantity: item.quantity.toString(),
       unitPrice: item.unitPrice.toString(),
       totalPrice: item.totalPrice.toString(),
     }));
 
     createSale.mutate({
-      clientId: formData.clientId,
-      totalAmount: calculateTotal().toString(),
-      status: formData.status as "pending" | "completed" | "cancelled",
-      saleDate: formData.saleDate,
+      sale: {
+        clientId: formData.clientId.toString(),
+        totalAmount: calculateTotal().toString(),
+        status: (formData.status === "pending" ? "draft" : formData.status) as
+          | "completed"
+          | "cancelled"
+          | "draft"
+          | "issued"
+          | "accepted",
+        saleDate: formData.saleDate,
+      },
       items: itemsData,
     });
   };

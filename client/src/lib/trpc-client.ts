@@ -1,5 +1,5 @@
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import type { AppRouter } from "../../../api/dist/src/trpc/routers/_app";
+import type { AppRouter } from "../../../api/dist/src/modules/trpc/app.router";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3501";
 

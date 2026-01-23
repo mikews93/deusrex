@@ -48,9 +48,7 @@ export class TrpcAuthService {
       const allowedAzp = [
         configuredAzp,
         frontendUrl,
-        publishableKey,
-        'http://localhost:8080',
-        'http://127.0.0.1:8080',
+        publishableKey
       ].filter((v): v is string => Boolean(v));
 
       // Try with jwtKey first (for JWT templates like "Eden")

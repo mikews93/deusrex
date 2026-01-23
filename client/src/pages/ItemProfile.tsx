@@ -159,7 +159,7 @@ const ItemProfile = () => {
         type: formData.type,
         stock:
           formData.type === "product"
-            ? parseInt(formData.stock) || 0
+            ? formData.stock || "0"
             : undefined,
         duration:
           formData.type === "service"
@@ -181,7 +181,7 @@ const ItemProfile = () => {
         type: formData.type,
         stock:
           formData.type === "product"
-            ? parseInt(formData.stock) || 0
+            ? formData.stock || "0"
             : undefined,
         duration:
           formData.type === "service"

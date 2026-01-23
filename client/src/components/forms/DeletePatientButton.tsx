@@ -16,7 +16,7 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
 interface DeletePatientButtonProps {
-  patientId: number;
+  patientId: string;
   patientName: string;
   trigger?: React.ReactNode;
 }

@@ -31,7 +31,7 @@ export function CreateProductForm() {
   const { data: currentOrganization } =
     trpc.auth.currentOrganization.useQuery();
 
-  const createProduct = trpc.products.create.useMutation({
+  const createProduct = trpc.items.create.useMutation({
     onSuccess: () => {
       toast.success("Product created successfully");
       setOpen(false);
@@ -58,8 +58,11 @@ export function CreateProductForm() {
     }
     createProduct.mutate({
       ...formData,
+      type: "product",
       organizationId: currentOrganization.id,
-      stock: parseInt(formData.stock) || 0,
+      stock: formData.stock || "0",
+      price: formData.price,
+      cost: formData.cost || undefined,
     });
   };
 

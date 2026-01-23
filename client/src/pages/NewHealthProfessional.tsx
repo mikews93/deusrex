@@ -101,7 +101,31 @@ const NewHealthProfessional = () => {
   };
 
   const handleSubmit = () => {
-    createHealthProfessional.mutate(formData);
+    createHealthProfessional.mutate({
+      ...formData,
+      specialty: (formData.specialty || undefined) as
+        | "general_practice"
+        | "cardiology"
+        | "dermatology"
+        | "neurology"
+        | "orthopedics"
+        | "pediatrics"
+        | "psychiatry"
+        | "radiology"
+        | "surgery"
+        | "emergency_medicine"
+        | "internal_medicine"
+        | "family_medicine"
+        | "oncology"
+        | "gynecology"
+        | "urology"
+        | "ophthalmology"
+        | "otolaryngology"
+        | "anesthesiology"
+        | "pathology"
+        | "other"
+        | undefined,
+    });
   };
 
   const isStepValid = (step: number) => {

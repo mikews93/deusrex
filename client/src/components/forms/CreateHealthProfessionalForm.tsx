@@ -84,9 +84,37 @@ export function CreateHealthProfessionalForm() {
 
     createHealthProfessional.mutate({
       ...formData,
+      type: formData.type as
+        | "doctor"
+        | "specialist"
+        | "nurse"
+        | "therapist"
+        | "technician"
+        | "administrator",
       languages:
         languagesArray.length > 0 ? JSON.stringify(languagesArray) : undefined,
-      specialty: formData.specialty || undefined,
+      specialty: (formData.specialty || undefined) as
+        | "general_practice"
+        | "cardiology"
+        | "dermatology"
+        | "neurology"
+        | "orthopedics"
+        | "pediatrics"
+        | "psychiatry"
+        | "radiology"
+        | "surgery"
+        | "emergency_medicine"
+        | "internal_medicine"
+        | "family_medicine"
+        | "oncology"
+        | "gynecology"
+        | "urology"
+        | "ophthalmology"
+        | "otolaryngology"
+        | "anesthesiology"
+        | "pathology"
+        | "other"
+        | undefined,
       licenseNumber: formData.licenseNumber || undefined,
       npi: formData.npi || undefined,
       bio: formData.bio || undefined,
